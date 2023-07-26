@@ -1,0 +1,51 @@
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+ld: library not found for -lSystem
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+ld: library not found for -lc++
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the function sgemm_ exists failed with the following output:
+Change Dir: /Users/ashray/CLionProjects/FactorGraphs/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Applications/CLion.app/Contents/bin/ninja/mac/ninja cmTC_91bc1 && [1/2] Building C object CMakeFiles/cmTC_91bc1.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_91bc1
+FAILED: cmTC_91bc1 
+: && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DCHECK_FUNCTION_EXISTS=sgemm_ -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0 -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/cmTC_91bc1.dir/CheckFunctionExists.c.o -o cmTC_91bc1   && :
+Undefined symbols for architecture arm64:
+  "_sgemm_", referenced from:
+      _main in CheckFunctionExists.c.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if the function shm_open exists in the rt failed with the following output:
+Change Dir: /Users/ashray/CLionProjects/FactorGraphs/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Applications/CLion.app/Contents/bin/ninja/mac/ninja cmTC_404e2 && [1/2] Building C object CMakeFiles/cmTC_404e2.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_404e2
+FAILED: cmTC_404e2 
+: && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DCHECK_FUNCTION_EXISTS=shm_open -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0 -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/cmTC_404e2.dir/CheckFunctionExists.c.o -o cmTC_404e2  -lrt && :
+ld: library not found for -lrt
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.
+
+
+

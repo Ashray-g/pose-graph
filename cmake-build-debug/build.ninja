@@ -1,0 +1,142 @@
+## This file contains all the build statements describing the
+# compilation DAG.
+
+# =============================================================================
+# Write statements declared in CMakeLists.txt:
+# 
+# Which is the root file.
+# =============================================================================
+
+# =============================================================================
+# Project: FactorGraphs
+# Configurations: Debug
+# =============================================================================
+
+#############################################
+# Minimal version of Ninja required by this file
+
+ninja_required_version = 1.5
+
+
+#############################################
+# Set configuration variable for custom commands.
+
+CONFIGURATION = Debug
+# =============================================================================
+# Include auxiliary files.
+
+
+#############################################
+# Include rules file.
+
+include CMakeFiles/rules.ninja
+
+# =============================================================================
+
+#############################################
+# Logical path to working directory; prefix for absolute paths.
+
+cmake_ninja_workdir = /Users/ashray/CLionProjects/FactorGraphs/cmake-build-debug/
+# =============================================================================
+# Object build statements for EXECUTABLE target FactorGraphs
+
+
+#############################################
+# Order-only phony target for FactorGraphs
+
+build cmake_object_order_depends_target_FactorGraphs: phony || CMakeFiles/FactorGraphs.dir
+
+build CMakeFiles/FactorGraphs.dir/main.cpp.o: CXX_COMPILER__FactorGraphs_Debug /Users/ashray/CLionProjects/FactorGraphs/main.cpp || cmake_object_order_depends_target_FactorGraphs
+  DEFINES = -DGFLAGS_IS_A_DLL=0 -DGLOG_CUSTOM_PREFIX_SUPPORT
+  DEP_FILE = CMakeFiles/FactorGraphs.dir/main.cpp.o.d
+  FLAGS = -O2 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0 -std=gnu++17
+  INCLUDES = -isystem /opt/homebrew/include/eigen3 -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/FactorGraphs.dir
+  OBJECT_FILE_DIR = CMakeFiles/FactorGraphs.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target FactorGraphs
+
+
+#############################################
+# Link the executable FactorGraphs
+
+build FactorGraphs: CXX_EXECUTABLE_LINKER__FactorGraphs_Debug CMakeFiles/FactorGraphs.dir/main.cpp.o | /opt/homebrew/lib/libceres.2.1.0.dylib /opt/homebrew/lib/libglog.0.6.0.dylib /opt/homebrew/lib/libgflags.2.2.2.dylib
+  FLAGS = -O2 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0
+  LINK_LIBRARIES = -Wl,-rpath,/opt/homebrew/lib  /opt/homebrew/lib/libceres.2.1.0.dylib  /opt/homebrew/lib/libglog.0.6.0.dylib  /opt/homebrew/lib/libgflags.2.2.2.dylib
+  OBJECT_DIR = CMakeFiles/FactorGraphs.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = FactorGraphs
+  TARGET_PDB = FactorGraphs.dbg
+
+
+#############################################
+# Utility command for edit_cache
+
+build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /Users/ashray/CLionProjects/FactorGraphs/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build edit_cache: phony CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /Users/ashray/CLionProjects/FactorGraphs/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/ashray/CLionProjects/FactorGraphs -B/Users/ashray/CLionProjects/FactorGraphs/cmake-build-debug
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build rebuild_cache: phony CMakeFiles/rebuild_cache.util
+
+# =============================================================================
+# Target aliases.
+
+# =============================================================================
+# Folder targets.
+
+# =============================================================================
+
+#############################################
+# Folder: /Users/ashray/CLionProjects/FactorGraphs/cmake-build-debug
+
+build all: phony FactorGraphs
+
+# =============================================================================
+# Built-in targets
+
+
+#############################################
+# Re-run CMake if any of its inputs changed.
+
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeCInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeCXXInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeFindDependencyMacro.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeGenericSystem.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeParseArguments.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckFunctionExists.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckIncludeFile.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckLibraryExists.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/GNU.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindBLAS.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindLAPACK.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindPackageMessage.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindThreads.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-Clang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-Clang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Darwin-Initialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Darwin.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/UnixPaths.cmake /opt/homebrew/lib/cmake/Ceres/CeresConfig.cmake /opt/homebrew/lib/cmake/Ceres/CeresConfigVersion.cmake /opt/homebrew/lib/cmake/Ceres/CeresTargets-release.cmake /opt/homebrew/lib/cmake/Ceres/CeresTargets.cmake /opt/homebrew/lib/cmake/Ceres/FindCXSparse.cmake /opt/homebrew/lib/cmake/Ceres/FindMETIS.cmake /opt/homebrew/lib/cmake/Ceres/FindSuiteSparse.cmake /opt/homebrew/lib/cmake/TBB/TBBConfig.cmake /opt/homebrew/lib/cmake/TBB/TBBConfigVersion.cmake /opt/homebrew/lib/cmake/TBB/TBBTargets-release.cmake /opt/homebrew/lib/cmake/TBB/TBBTargets.cmake /opt/homebrew/lib/cmake/gflags/gflags-config-version.cmake /opt/homebrew/lib/cmake/gflags/gflags-config.cmake /opt/homebrew/lib/cmake/gflags/gflags-nonamespace-targets-release.cmake /opt/homebrew/lib/cmake/gflags/gflags-nonamespace-targets.cmake /opt/homebrew/lib/cmake/glog/glog-config-version.cmake /opt/homebrew/lib/cmake/glog/glog-config.cmake /opt/homebrew/lib/cmake/glog/glog-modules.cmake /opt/homebrew/lib/cmake/glog/glog-targets-release.cmake /opt/homebrew/lib/cmake/glog/glog-targets.cmake /opt/homebrew/share/eigen3/cmake/Eigen3Config.cmake /opt/homebrew/share/eigen3/cmake/Eigen3ConfigVersion.cmake /opt/homebrew/share/eigen3/cmake/Eigen3Targets.cmake CMakeCache.txt CMakeFiles/3.23.2/CMakeCCompiler.cmake CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake
+  pool = console
+
+
+#############################################
+# A missing CMake input file is not an error.
+
+build ../CMakeLists.txt /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeCInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeCXXInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeFindDependencyMacro.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeGenericSystem.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeParseArguments.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckFunctionExists.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckIncludeFile.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/CheckLibraryExists.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Compiler/GNU.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindBLAS.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindLAPACK.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindPackageMessage.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/FindThreads.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-AppleClang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-AppleClang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-Clang-C.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-Clang-CXX.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Apple-Clang.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Darwin-Initialize.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/Darwin.cmake /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.23/Modules/Platform/UnixPaths.cmake /opt/homebrew/lib/cmake/Ceres/CeresConfig.cmake /opt/homebrew/lib/cmake/Ceres/CeresConfigVersion.cmake /opt/homebrew/lib/cmake/Ceres/CeresTargets-release.cmake /opt/homebrew/lib/cmake/Ceres/CeresTargets.cmake /opt/homebrew/lib/cmake/Ceres/FindCXSparse.cmake /opt/homebrew/lib/cmake/Ceres/FindMETIS.cmake /opt/homebrew/lib/cmake/Ceres/FindSuiteSparse.cmake /opt/homebrew/lib/cmake/TBB/TBBConfig.cmake /opt/homebrew/lib/cmake/TBB/TBBConfigVersion.cmake /opt/homebrew/lib/cmake/TBB/TBBTargets-release.cmake /opt/homebrew/lib/cmake/TBB/TBBTargets.cmake /opt/homebrew/lib/cmake/gflags/gflags-config-version.cmake /opt/homebrew/lib/cmake/gflags/gflags-config.cmake /opt/homebrew/lib/cmake/gflags/gflags-nonamespace-targets-release.cmake /opt/homebrew/lib/cmake/gflags/gflags-nonamespace-targets.cmake /opt/homebrew/lib/cmake/glog/glog-config-version.cmake /opt/homebrew/lib/cmake/glog/glog-config.cmake /opt/homebrew/lib/cmake/glog/glog-modules.cmake /opt/homebrew/lib/cmake/glog/glog-targets-release.cmake /opt/homebrew/lib/cmake/glog/glog-targets.cmake /opt/homebrew/share/eigen3/cmake/Eigen3Config.cmake /opt/homebrew/share/eigen3/cmake/Eigen3ConfigVersion.cmake /opt/homebrew/share/eigen3/cmake/Eigen3Targets.cmake CMakeCache.txt CMakeFiles/3.23.2/CMakeCCompiler.cmake CMakeFiles/3.23.2/CMakeCXXCompiler.cmake CMakeFiles/3.23.2/CMakeSystem.cmake: phony
+
+
+#############################################
+# Clean all the built files.
+
+build clean: CLEAN
+
+
+#############################################
+# Print all primary targets available.
+
+build help: HELP
+
+
+#############################################
+# Make the all target the default.
+
+default all
