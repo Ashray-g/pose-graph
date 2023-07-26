@@ -11,10 +11,6 @@ void Graph::run() {
     //
     //      min Σᵢ||hᵢ(Xᵢ) − zᵢ||²                      (1.1)
 
-    //TODO:
-    // - QR-updating (5.2)
-    // - Marginalization (5.3)
-
     while(true) {
         // Linearize each hᵢ(Xᵢ) using the taylor expansion with
         // Hᵢ as the measurement jacobian for hᵢ(.) around Xᵢ⁰
@@ -69,7 +65,6 @@ Eigen::VectorXd Graph::Step(Eigen::SparseMatrix<double> A, Eigen::VectorXd b) {
     return LDLT.solve(A.transpose() * b);
 }
 
-//TODO: Implement whitening
 Eigen::SparseMatrix<double> Graph::WhitenJacobian(Eigen::SparseMatrix<double> J){
 
 

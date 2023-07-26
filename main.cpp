@@ -57,6 +57,7 @@ void SolveFactorGraph(VectorOf3dConstraints &constraints_3d, VectorOfPixelConstr
         problem.SetManifold(b->second.q.coeffs().data(), manifold);
     }
 
+    //TODO clean these and initialize somewhere else
     Eigen::Vector<double, 5> dist;
     Eigen::Matrix<double, 3, 3> intrin;
 
@@ -97,9 +98,10 @@ void SetupVisionInformation(Eigen::Matrix<double, 2, 2> &a) {
 
 void test() {
     Eigen::Matrix<double, 6, 6> odometry_factor_information;
-    Eigen::Matrix<double, 6, 6> vision_factor_information;
+    Eigen::Matrix<double, 2, 2> vision_factor_information;
 
     SetupOdometryInformation(odometry_factor_information);
+    SetupVisionInformation(vision_factor_information);
 
     VectorOf3dConstraints constraints_3d;
     VectorOfPixelConstraints constraints_pixel;
@@ -137,6 +139,8 @@ void test() {
         pose_map->insert(std::pair<int, Pose3d>(i, p));
         last = p.p(0);
     }
+
+    //TODO: Add constaints_vision for landmarks next
 
     Pose3d p;
     p.p(0) = n * 0.11;
