@@ -175,7 +175,7 @@ void test() {
         pose_map->insert(std::pair<int, Pose3d>(i, p));
     }
     Pose3d p;
-    p.p << n_poses * 0.11, 0, 0;
+    p.p << last + distribution_odometry(generator_odom), 0, 0;
     pose_map->insert(std::pair<int, Pose3d>(n_poses, p));
 
     for (int i = 0; i < n_landmarks; i++) {
