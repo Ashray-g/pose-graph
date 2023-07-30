@@ -49,7 +49,7 @@ build cmake_object_order_depends_target_FactorGraphs: phony || CMakeFiles/Factor
 build CMakeFiles/FactorGraphs.dir/main.cpp.o: CXX_COMPILER__FactorGraphs_Debug /Users/ashray/CLionProjects/FactorGraphs/main.cpp || cmake_object_order_depends_target_FactorGraphs
   DEFINES = -DGFLAGS_IS_A_DLL=0 -DGLOG_CUSTOM_PREFIX_SUPPORT
   DEP_FILE = CMakeFiles/FactorGraphs.dir/main.cpp.o.d
-  FLAGS = -O2 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0 -std=gnu++17
+  FLAGS = -O1 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0 -std=gnu++17
   INCLUDES = -isystem /opt/homebrew/include/eigen3 -isystem /opt/homebrew/include
   OBJECT_DIR = CMakeFiles/FactorGraphs.dir
   OBJECT_FILE_DIR = CMakeFiles/FactorGraphs.dir
@@ -63,7 +63,7 @@ build CMakeFiles/FactorGraphs.dir/main.cpp.o: CXX_COMPILER__FactorGraphs_Debug /
 # Link the executable FactorGraphs
 
 build FactorGraphs: CXX_EXECUTABLE_LINKER__FactorGraphs_Debug CMakeFiles/FactorGraphs.dir/main.cpp.o | /opt/homebrew/lib/libceres.2.1.0.dylib /opt/homebrew/lib/libglog.0.6.0.dylib /opt/homebrew/lib/libgflags.2.2.2.dylib
-  FLAGS = -O2 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0
+  FLAGS = -O1 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.0
   LINK_LIBRARIES = -Wl,-rpath,/opt/homebrew/lib  /opt/homebrew/lib/libceres.2.1.0.dylib  /opt/homebrew/lib/libglog.0.6.0.dylib  /opt/homebrew/lib/libgflags.2.2.2.dylib
   OBJECT_DIR = CMakeFiles/FactorGraphs.dir
   POST_BUILD = :
