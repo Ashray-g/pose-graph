@@ -60,6 +60,7 @@ public:
         residuals.template block<2, 1>(0, 0) =
                 pix - pixel_observed.template cast<T>();
 
+
         // Assuming this is Mahalanobis norm Σ⁻⁰ᐧ⁵
         // From the pose_graph_3d_error_term example
         residuals.applyOnTheLeft(sqrt_information.template cast<T>());
