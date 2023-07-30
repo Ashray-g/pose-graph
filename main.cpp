@@ -11,6 +11,8 @@
 
 #include <random>
 
+#include <fstream>
+
 using namespace ceres::examples;
 
 Eigen::Vector<double, 5> distortionCoeffs;
@@ -23,7 +25,7 @@ bool SolveOptimizationProblem(ceres::Problem *problem) {
     options.num_threads = 1;
     options.trust_region_strategy_type = ceres::DOGLEG;
 
-    options.max_num_iterations = 50;
+    options.max_num_iterations = 500;
     options.linear_solver_type = ceres::SPARSE_NORMAL_CHOLESKY;
 
     ceres::Solver::Summary summary;
@@ -36,11 +38,13 @@ bool SolveOptimizationProblem(ceres::Problem *problem) {
 
 void SolveFactorGraph(VectorOf3dConstraints &constraints_3d, VectorOfPixelConstraints &constraints_pixel,
                       MapOfPoses *pose_map, MapOfLandmarks *landmark_map) {
-    ceres::LossFunction *loss = new ceres::HuberLoss(2.0);
+
+    ceres::LossFunction *loss_odom = new ceres::HuberLoss(2.0);
+    ceres::LossFunction *loss_vision = new ceres::HuberLoss(2.0);
+
     ceres::Manifold *manifold = new ceres::EigenQuaternionManifold();
 
     ceres::Problem problem;
-
     for (Constraint3d &i: constraints_3d) {
         ceres::CostFunction *cost_function = PoseGraph3dErrorTerm::Create(i.t_be, i.information.llt().matrixL());
 
@@ -48,43 +52,44 @@ void SolveFactorGraph(VectorOf3dConstraints &constraints_3d, VectorOfPixelConstr
         auto b = pose_map->find(i.id_end);
 
         problem.AddResidualBlock(cost_function,
-                                 loss,
+                                 loss_odom,
                                  a->second.p.data(),
                                  a->second.q.coeffs().data(),
                                  b->second.p.data(),
                                  b->second.q.coeffs().data());
+        problem.AddParameterBlock(a->second.q.coeffs().data(), 4);
+        problem.AddParameterBlock(a->second.p.data(), 3);
+        problem.AddParameterBlock(b->second.q.coeffs().data(), 4);
+        problem.AddParameterBlock(b->second.p.data(), 3);
 
         problem.SetManifold(a->second.q.coeffs().data(), manifold);
         problem.SetManifold(b->second.q.coeffs().data(), manifold);
     }
 
-    //TODO clean these and initialize somewhere else
-    Eigen::Vector<double, 5> dist;
-    Eigen::Matrix<double, 3, 3> intrin;
+    for (ConstraintVision &i: constraints_pixel) {
+        ceres::CostFunction *cost_function = PoseGraphPixelErrorTerm::Create(i.pixel_coord,
+                                                                             i.information.llt().matrixL(),
+                                                                             intrinsic);
 
-    if (true) {
-        for (ConstraintVision &i: constraints_pixel) {
-            ceres::CostFunction *cost_function = PoseGraphPixelErrorTerm::Create(i.pixel_coord,
-                                                                                 i.information.llt().matrixL(),
-                                                                                 intrin);
+        auto pose = pose_map->find(i.id_pose);
+        auto landmark = landmark_map->find(i.id_landmark);
 
-            auto pose = pose_map->find(i.id_pose);
-            auto landmark = landmark_map->find(i.id_landmark);
+        problem.AddResidualBlock(cost_function,
+                                 loss_vision,
+                                 pose->second.p.data(),
+                                 pose->second.q.coeffs().data(),
+                                 landmark->second.data());
 
-            problem.AddResidualBlock(cost_function,
-                                     loss,
-                                     pose->second.p.data(),
-                                     pose->second.q.coeffs().data(),
-                                     landmark->second.data());
+        problem.SetParameterBlockConstant(landmark->second.data());
 
-            // Manifolds already set in previous loop for pose quaternions
-        }
+        // Manifolds already set in previous loop for pose quaternions
     }
+
 
     //TODO: set landmarks constant?
 
-    problem.SetParameterBlockConstant(pose_map->find(constraints_3d[0].id_begin)->second.p.data());
-    problem.SetParameterBlockConstant(pose_map->find(constraints_3d[0].id_begin)->second.q.coeffs().data());
+//    problem.SetParameterBlockConstant(pose_map->find(constraints_3d[0].id_begin)->second.p.data());
+//    problem.SetParameterBlockConstant(pose_map->find(constraints_3d[0].id_begin)->second.q.coeffs().data());
 
     SolveOptimizationProblem(&problem);
 }
@@ -95,7 +100,7 @@ void SetupOdometryInformation(Eigen::Matrix<double, 6, 6> &a) {
 }
 
 void SetupVisionInformation(Eigen::Matrix<double, 2, 2> &a) {
-    Eigen::Matrix<double, 2, 2> covariance = Eigen::MatrixXd::Identity(2, 2) * 1e-1;
+    Eigen::Matrix<double, 2, 2> covariance = Eigen::MatrixXd::Identity(2, 2) * 10;
     a = covariance.inverse();
 
     distortionCoeffs << 0.06339634695488064,
@@ -147,55 +152,61 @@ void test() {
     auto *pose_map = new MapOfPoses();
     auto *landmark_map = new MapOfLandmarks();
 
+    //0 -> 1 -> 2 -> 3 -> ... 49
+    // ground truth: 0, 0.1, 0.2, ..., 4.9
     int n_poses = 50;
     int n_landmarks = 10;
 
     std::default_random_engine generator_odom(1);
     std::default_random_engine generator_pixel(1);
-    std::normal_distribution<double> distribution_odometry(0.1, 0.005);
-    std::normal_distribution<double> distribution_pixel(0, 100);
+    std::normal_distribution<double> distribution_odometry(0.1, 0.02);
+    std::normal_distribution<double> distribution_pixel(0, 10);
 
     //Add constraints_3d for odometry
-    double last = 0;
-    for (int i = 0; i < n_poses; i++) {
+    double summation_pose = 0;
+    for (int i = 0; i < n_poses - 1; i++) {
         Constraint3d constraint;
         constraint.id_begin = i;
         constraint.id_end = i + 1;
+        double delta_measurement = distribution_odometry(generator_odom);
 
-        Pose3d p1;
-        p1.p << 0.1, 0, 0;
+        Pose3d constraint_delta;
+        constraint_delta.p << delta_measurement, 0, 0; //measurement fall gaussian around 0.1 (ground truth)
 
-        constraint.t_be = p1;
+        constraint.t_be = constraint_delta;
         constraint.information = odometry_factor_information;
         constraints_3d.emplace_back(constraint);
 
-        Pose3d p;
-        last += distribution_odometry(generator_odom);
-        p.p << last, 0, 0;
-        pose_map->insert(std::pair<int, Pose3d>(i, p));
-    }
-    Pose3d p;
-    p.p << last + distribution_odometry(generator_odom), 0, 0;
-    pose_map->insert(std::pair<int, Pose3d>(n_poses, p));
+        Pose3d initial_guess_pose;
+        initial_guess_pose.p << summation_pose, 0, 0;
+        pose_map->insert(std::pair<int, Pose3d>(i, initial_guess_pose)); // TODO: Verify this is for initial guess?
 
-    for (int i = 0; i < n_landmarks; i++) {
+        summation_pose += delta_measurement;
+
+        if (i == n_poses - 2) {
+            Pose3d p;
+            p.p << summation_pose, 0, 0;
+            pose_map->insert(std::pair<int, Pose3d>(i + 1, p));
+        }
+    }
+
+    for (int i = 0; i < n_poses; i++) {
 
         int id = i;
-        //Should run them alongside the poses?
-        Eigen::Vector3d landmark_translation((double(i) / n_landmarks) * (n_poses / 10.0), 0, 1);
+        Eigen::Vector3d landmark_translation((double(i) / n_landmarks) * (n_poses / 10.0), 0, 1); // Ground truth
         landmark_map->insert(std::pair<int, Eigen::Vector3d>(id, landmark_translation));
 
         for (int j = 0; j < n_poses; j++) {
-            auto frame_coord = frame_coords(landmark_translation, pose_map->find(0)->second.p,
-                                            pose_map->find(0)->second.q);
+            Eigen::Vector3d v(j * 0.1, 0, 0); // Ground truth robot pose
 
+            auto frame_coord = frame_coords(landmark_translation, v,
+                                            pose_map->find(0)->second.q); // Measurement at ground truth
 
+            //Check if landmark is in frame (for simulation)
             if (frame_coord(0) >= 0 && frame_coord(0) <= 1280 && frame_coord(1) >= 0 && frame_coord(1) <= 960) {
 
-                std::cout << frame_coord(0);
-                frame_coord(0) += distribution_pixel(generator_pixel);
-                std::cout << "-> " << frame_coord(0) << "\n\n";
-                frame_coord(1) += distribution_pixel(generator_pixel);
+                frame_coord(0) += distribution_pixel(generator_pixel); // Add noise
+                frame_coord(1) += distribution_pixel(generator_pixel); // Add noise
 
                 ConstraintVision vision_constraint;
                 vision_constraint.id_landmark = id;
@@ -210,17 +221,27 @@ void test() {
     }
 
 
-    for (int i = 0; i <= n_poses; i++) {
+    std::ofstream myfile1("initial_guess.txt");
+    for (int i = 0; i < n_poses; i++) {
         std::cout << pose_map->find(i)->second.p(0) << " ";
+        myfile1 << pose_map->find(i)->second.p(0) << " " << pose_map->find(i)->second.p(1) << " "
+                << pose_map->find(i)->second.p(2) << "\n";
     }
     std::cout << "\n\n";
 
     SolveFactorGraph(constraints_3d, constraints_pixel, pose_map, landmark_map);
 
+    std::ofstream myfile2("solved_out.txt");
+
     std::cout << "\n\n";
-    for (int i = 0; i <= n_poses; i++) {
+    for (int i = 0; i < n_poses; i++) {
         std::cout << pose_map->find(i)->second.p(0) << " ";
+        myfile2 << pose_map->find(i)->second.p(0) << " " << pose_map->find(i)->second.p(1) << " "
+                << pose_map->find(i)->second.p(2) << "\n";
     }
+
+    myfile1.close();
+    myfile2.close();
 }
 
 
