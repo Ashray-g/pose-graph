@@ -85,12 +85,6 @@ void SolveFactorGraph(VectorOf3dConstraints &constraints_3d, VectorOfPixelConstr
         // Manifolds already set in previous loop for pose quaternions
     }
 
-
-    //TODO: set landmarks constant?
-
-//    problem.SetParameterBlockConstant(pose_map->find(constraints_3d[0].id_begin)->second.p.data());
-//    problem.SetParameterBlockConstant(pose_map->find(constraints_3d[0].id_begin)->second.q.coeffs().data());
-
     SolveOptimizationProblem(&problem);
 }
 
@@ -152,15 +146,14 @@ void test() {
     auto *pose_map = new MapOfPoses();
     auto *landmark_map = new MapOfLandmarks();
 
-    //0 -> 1 -> 2 -> 3 -> ... 49
-    // ground truth: 0, 0.1, 0.2, ..., 4.9
+    // ground truth for poses: 0, 0.1, 0.2, ..., 4.9
     int n_poses = 50;
     int n_landmarks = 10;
 
     std::default_random_engine generator_odom(1);
     std::default_random_engine generator_pixel(1);
     std::normal_distribution<double> distribution_odometry(0.1, 0.02);
-    std::normal_distribution<double> distribution_pixel(0, 10);
+    std::normal_distribution<double> distribution_pixel(0, 5);
 
     //Add constraints_3d for odometry
     double summation_pose = 0;
@@ -190,11 +183,16 @@ void test() {
         }
     }
 
-    for (int i = 0; i < n_poses; i++) {
+    std::ofstream myfile0("landmark_position.txt");
+
+    for (int i = 0; i < n_landmarks; i++) {
 
         int id = i;
-        Eigen::Vector3d landmark_translation((double(i) / n_landmarks) * (n_poses / 10.0), 0, 1); // Ground truth
+        double mark = (double(i) / n_landmarks) * (5.0);
+        Eigen::Vector3d landmark_translation(mark, 0.1, 1); // Ground truth
         landmark_map->insert(std::pair<int, Eigen::Vector3d>(id, landmark_translation));
+
+        myfile0 << landmark_map->find(id)->second(0) << " " << landmark_map->find(id)->second(1) << " " << landmark_map->find(id)->second(2) << "\n";
 
         for (int j = 0; j < n_poses; j++) {
             Eigen::Vector3d v(j * 0.1, 0, 0); // Ground truth robot pose
@@ -219,28 +217,22 @@ void test() {
             }
         }
     }
-
+    myfile0.close();
 
     std::ofstream myfile1("initial_guess.txt");
     for (int i = 0; i < n_poses; i++) {
-        std::cout << pose_map->find(i)->second.p(0) << " ";
         myfile1 << pose_map->find(i)->second.p(0) << " " << pose_map->find(i)->second.p(1) << " "
                 << pose_map->find(i)->second.p(2) << "\n";
     }
-    std::cout << "\n\n";
+    myfile1.close();
 
     SolveFactorGraph(constraints_3d, constraints_pixel, pose_map, landmark_map);
 
     std::ofstream myfile2("solved_out.txt");
-
-    std::cout << "\n\n";
     for (int i = 0; i < n_poses; i++) {
-        std::cout << pose_map->find(i)->second.p(0) << " ";
         myfile2 << pose_map->find(i)->second.p(0) << " " << pose_map->find(i)->second.p(1) << " "
                 << pose_map->find(i)->second.p(2) << "\n";
     }
-
-    myfile1.close();
     myfile2.close();
 }
 

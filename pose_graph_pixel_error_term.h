@@ -52,14 +52,9 @@ public:
         pix << x, y;
 
         //Just don't do distortion stuff inside the ceres stuff (keep outside)
-
-//        residuals_ptr[0] = pix(0) - pixel_observed(0);
-//        residuals_ptr[1] = pix(1) - pixel_observed(1);
-
         Eigen::Map<Eigen::Matrix<T, 2, 1>> residuals(residuals_ptr);
         residuals.template block<2, 1>(0, 0) =
                 pix - pixel_observed.template cast<T>();
-
 
         // Assuming this is Mahalanobis norm Σ⁻⁰ᐧ⁵
         // From the pose_graph_3d_error_term example
