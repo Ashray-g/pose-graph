@@ -24,9 +24,11 @@ bool SolveOptimizationProblem(ceres::Problem *problem) {
 
     options.num_threads = 1;
     options.trust_region_strategy_type = ceres::DOGLEG;
+//    options.trust_region_strategy_type = ceres::LEVENBERG_MARQUARDT;
 
     options.max_num_iterations = 500;
     options.linear_solver_type = ceres::SPARSE_NORMAL_CHOLESKY;
+//    options.linear_solver_type = ceres::SPARSE_SCHUR;
 
     ceres::Solver::Summary summary;
     ceres::Solve(options, problem, &summary);
@@ -89,12 +91,12 @@ void SolveFactorGraph(VectorOf3dConstraints &constraints_3d, VectorOfPixelConstr
 }
 
 void SetupOdometryInformation(Eigen::Matrix<double, 6, 6> &a) {
-    Eigen::Matrix<double, 6, 6> covariance = Eigen::MatrixXd::Identity(6, 6) * 1e-1;
+    Eigen::Matrix<double, 6, 6> covariance = Eigen::MatrixXd::Identity(6, 6) * 0.02 * 0.02;
     a = covariance.inverse();
 }
 
 void SetupVisionInformation(Eigen::Matrix<double, 2, 2> &a) {
-    Eigen::Matrix<double, 2, 2> covariance = Eigen::MatrixXd::Identity(2, 2) * 10;
+    Eigen::Matrix<double, 2, 2> covariance = Eigen::MatrixXd::Identity(2, 2) * 4;
     a = covariance.inverse();
 
     distortionCoeffs << 0.06339634695488064,
@@ -150,31 +152,35 @@ void test() {
     int n_poses = 50;
     int n_landmarks = 10;
 
-    std::default_random_engine generator_odom(1);
-    std::default_random_engine generator_pixel(1);
+    std::default_random_engine generator_odom(6532); //65 causes issues
+    std::default_random_engine generator_pixel{};
     std::normal_distribution<double> distribution_odometry(0.1, 0.02);
-    std::normal_distribution<double> distribution_pixel(0, 5);
+    std::normal_distribution<double> distribution_odometry2(0.0, 0.002);
+    std::normal_distribution<double> distribution_pixel(0, 2);
 
     //Add constraints_3d for odometry
     double summation_pose = 0;
+    double summation_pose2 = 0;
     for (int i = 0; i < n_poses - 1; i++) {
         Constraint3d constraint;
         constraint.id_begin = i;
         constraint.id_end = i + 1;
         double delta_measurement = distribution_odometry(generator_odom);
+        double delta_measurement2 = distribution_odometry2(generator_odom);
 
         Pose3d constraint_delta;
-        constraint_delta.p << delta_measurement, 0, 0; //measurement fall gaussian around 0.1 (ground truth)
+        constraint_delta.p << delta_measurement, delta_measurement2, 0; // delta measurements fall normally around 0.1 (ground truth)
 
         constraint.t_be = constraint_delta;
         constraint.information = odometry_factor_information;
         constraints_3d.emplace_back(constraint);
 
         Pose3d initial_guess_pose;
-        initial_guess_pose.p << summation_pose, 0, 0;
+        initial_guess_pose.p << summation_pose, summation_pose2, 0;
         pose_map->insert(std::pair<int, Pose3d>(i, initial_guess_pose)); // TODO: Verify this is for initial guess?
 
         summation_pose += delta_measurement;
+        summation_pose2 += delta_measurement2;
 
         if (i == n_poses - 2) {
             Pose3d p;
@@ -195,7 +201,7 @@ void test() {
         myfile0 << landmark_map->find(id)->second(0) << " " << landmark_map->find(id)->second(1) << " " << landmark_map->find(id)->second(2) << "\n";
 
         for (int j = 0; j < n_poses; j++) {
-            Eigen::Vector3d v(j * 0.1, 0, 0); // Ground truth robot pose
+            Eigen::Vector3d v(j * 0.1, 0, 0); // Ground truth camera pose
 
             auto frame_coord = frame_coords(landmark_translation, v,
                                             pose_map->find(0)->second.q); // Measurement at ground truth
