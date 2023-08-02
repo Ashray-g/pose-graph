@@ -96,7 +96,7 @@ void SetupOdometryInformation(Eigen::Matrix<double, 6, 6> &a) {
 }
 
 void SetupVisionInformation(Eigen::Matrix<double, 2, 2> &a) {
-    Eigen::Matrix<double, 2, 2> covariance = Eigen::MatrixXd::Identity(2, 2) * 4;
+    Eigen::Matrix<double, 2, 2> covariance = Eigen::MatrixXd::Identity(2, 2) * 2 * 2;
     a = covariance.inverse();
 
     distortionCoeffs << 0.06339634695488064,
@@ -150,9 +150,9 @@ void test() {
 
     // ground truth for poses: 0, 0.1, 0.2, ..., 4.9
     int n_poses = 50;
-    int n_landmarks = 10;
+    int n_landmarks = 100;
 
-    std::default_random_engine generator_odom(6532); //65 causes issues
+    std::default_random_engine generator_odom(6); //65 causes issues
     std::default_random_engine generator_pixel{};
     std::normal_distribution<double> distribution_odometry(0.1, 0.02);
     std::normal_distribution<double> distribution_odometry2(0.0, 0.002);
@@ -177,7 +177,8 @@ void test() {
 
         Pose3d initial_guess_pose;
         initial_guess_pose.p << summation_pose, summation_pose2, 0;
-        pose_map->insert(std::pair<int, Pose3d>(i, initial_guess_pose)); // TODO: Verify this is for initial guess?
+        initial_guess_pose.q = *new Eigen::Quaterniond (1, 0, 0, 0);
+        pose_map->insert(std::pair<int, Pose3d>(i, initial_guess_pose));
 
         summation_pose += delta_measurement;
         summation_pose2 += delta_measurement2;
@@ -204,7 +205,7 @@ void test() {
             Eigen::Vector3d v(j * 0.1, 0, 0); // Ground truth camera pose
 
             auto frame_coord = frame_coords(landmark_translation, v,
-                                            pose_map->find(0)->second.q); // Measurement at ground truth
+                                            pose_map->find(j)->second.q); // Measurement at ground truth
 
             //Check if landmark is in frame (for simulation)
             if (frame_coord(0) >= 0 && frame_coord(0) <= 1280 && frame_coord(1) >= 0 && frame_coord(1) <= 960) {
